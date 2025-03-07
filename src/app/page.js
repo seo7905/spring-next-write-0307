@@ -28,8 +28,15 @@ export default function Home() {
     {callData(); 
   },[]);
 
-  function changePage(e){
-    console.log('cp:'+e.target.innerText); // e.target이니깐 tag가 넘어올듯?
+  // function changePage(e){
+  //   console.log('cp:'+e.target.innerText); // e.target이니깐 tag가 넘어올듯?
+  // }
+  const changePage = (e,p) => {
+  // function changePage(e, p){
+  //   // Pagination에서 호출하는 함수는 두번째 인자로 페이지 값을 자동으로 전달 함
+    console.log('changepage:'+p);
+    setCpage(p);
+    callData();
   }
 
   return (
