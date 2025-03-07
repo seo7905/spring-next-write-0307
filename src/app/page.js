@@ -1,95 +1,41 @@
-import Image from "next/image";
+'use client';
+import BbsList from "@/component/BbsList";
+import { useEffect, useState } from "react";
 import styles from "./page.module.css";
+import axios from "axios";
 
 export default function Home() {
+  const API_URL = "/board/list";
+
+  const [bname, setBname] = useState('BBS');
+  const [list, setList] = useState([]);
+  const [cPage, setCpage] = useState(1);
+  const [totalPage, setTotalPage] = useState(0);
+
+  // 비동기식 통신을 하는 함수
+  function callData(){
+    axios.get(
+      API_URL,
+      {params:{bname:bname, cPage:cPage}} // 파라미터 주는 방식 ? 뒤에 = 하는 것보단 훨씬 체계적으로 보인다.
+    ).then((json) => { // 서버의 데이터가 도착하는 지점(then)
+      // console.log(json.data.totalPage);
+      setList(json.data.ar);
+      setTotalPage(json.data.totalPage);
+    });
+  }
+
+  useEffect(() => 
+    {callData(); 
+  },[]);
+
+  function changePage(e){
+    console.log('cp:'+e.target.innerText); // e.target이니깐 tag가 넘어올듯?
+  }
+
   return (
     <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+     {/* cp라는 이름으로 changePage 함수 전달 */}
+     <BbsList list={list} totalPage={totalPage} cp={changePage}/> 
     </div>
   );
 }
